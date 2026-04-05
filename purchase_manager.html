@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#0f62fe">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="購入管理">
+<title>購入管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--font:"IBM Plex Sans JP","IBM Plex Sans",-apple-system,sans-serif;
+--blue60:#0f62fe;--blue70:#0043ce;--blue80:#002d9c;--blue20:#d0e2ff;--blue10:#edf5ff;
+--g100:#161616;--g90:#262626;--g80:#393939;--g70:#525252;--g60:#6f6f6f;--g50:#8d8d8d;--g40:#a8a8a8;--g30:#c6c6c6;--g20:#e0e0e0;--g10:#f4f4f4;--wh:#fff;
+--green50:#24a148;--green10:#defbe6;
+--red60:#da1e28;--red10:#fff1f1;
+--yellow30:#f1c21b;--yellow20:#fdd13a;--yellow10:#fcf4d6;--yellow80:#684e00;
+--purple60:#8a3ffc;--purple10:#e8daff;
+--teal50:#009d9a;--teal10:#d9fbfb;
+--bg:var(--wh);--bg2:var(--g10);--bg3:var(--g20);
+--text:var(--g100);--text2:var(--g70);--text3:var(--g50);
+--border:var(--g20);--border2:var(--g30);
+--card:var(--wh);--hover:var(--g10);
+--sb-bg:var(--g10);--sb-text:var(--g70);--sb-text2:var(--g50);--sb-active:var(--g100);--sb-hover:var(--g20);--sb-border:var(--g20);--sb-badge:var(--g20);
+--pri-h-bg:var(--red10);--pri-h-c:var(--red60);
+--pri-m-bg:var(--yellow10);--pri-m-c:var(--yellow80);
+--pri-l-bg:var(--blue10);--pri-l-c:var(--blue60);
+--st-dec-bg:var(--green10);--st-dec-c:var(--green50);
+--st-rev-bg:var(--yellow10);--st-rev-c:var(--yellow80);
+--st-pen-bg:var(--g10);--st-pen-c:var(--g50);
+--st-buy-bg:var(--g20);--st-buy-c:var(--g50);
+}
+[data-theme="dark"]{
+--bg:var(--g100);--bg2:var(--g90);--bg3:var(--g80);
+--text:var(--g10);--text2:var(--g40);--text3:var(--g60);
+--border:var(--g80);--border2:var(--g70);--card:var(--g90);--hover:var(--g80);
+--sb-bg:#0c0c0c;--sb-text:var(--g40);--sb-text2:var(--g60);--sb-active:var(--wh);--sb-hover:var(--g90);--sb-border:var(--g80);--sb-badge:var(--g80);
+--pri-h-bg:rgba(218,30,40,.15);--pri-h-c:#ff8389;
+--pri-m-bg:rgba(241,194,27,.12);--pri-m-c:var(--yellow20);
+--pri-l-bg:rgba(15,98,254,.15);--pri-l-c:#78a9ff;
+--st-dec-bg:rgba(36,161,72,.15);--st-dec-c:#42be65;
+--st-rev-bg:rgba(241,194,27,.12);--st-rev-c:var(--yellow20);
+--st-pen-bg:var(--g80);--st-pen-c:var(--g50);
+--st-buy-bg:var(--g80);--st-buy-c:var(--g60);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;height:100dvh;overflow:hidden;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+.sb{width:260px;min-width:260px;background:var(--sb-bg);color:var(--sb-text);display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;border-right:1px solid var(--sb-border)}
+.sb-hd{padding:20px 20px 16px;border-bottom:1px solid var(--sb-border)}
+.sb-logo{font-size:13px;font-weight:600;color:var(--sb-active);letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.sb-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--blue60);flex-shrink:0}
+.sb-nv{flex:1;overflow-y:auto;padding:8px 0}
+.sb-nv::-webkit-scrollbar{width:4px}
+.sb-nv::-webkit-scrollbar-thumb{background:var(--sb-border);border-radius:2px}
+.sb-sec{padding:12px 20px 6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--sb-text2)}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 16px 8px 20px;cursor:pointer;font-size:13px;color:var(--sb-text);border-left:3px solid transparent;transition:all .12s;position:relative}
+.ni:hover{background:var(--sb-hover);color:var(--sb-active)}
+.ni.act{background:var(--sb-hover);color:var(--sb-active);border-left-color:var(--blue60);font-weight:500}
+.ni .cnt{margin-left:auto;font-size:11px;background:var(--sb-badge);padding:1px 7px;border-radius:10px}
+.ni .sa{display:none;margin-left:auto;gap:2px}
+.ni:hover .sa{display:flex}
+.ni:hover .cnt{display:none}
+.sab{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--sb-text2);border-radius:2px;font-size:13px;padding:0}
+.sab:hover{background:var(--sb-border);color:var(--sb-active)}
+.sb-add{display:flex;align-items:center;gap:8px;padding:8px 20px;cursor:pointer;font-size:13px;color:var(--blue60);transition:all .12s}
+.sb-add:hover{background:var(--sb-hover)}
+.sb-ft{padding:12px 16px;border-top:1px solid var(--sb-border);display:flex;flex-direction:column;gap:6px}
+.sb-ft button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;font-size:12px;font-family:var(--font);color:var(--sb-text);background:transparent;border:1px solid var(--sb-border);border-radius:0;cursor:pointer;transition:all .12s}
+.sb-ft button:hover{background:var(--sb-hover);color:var(--sb-active)}
+.thr{display:flex;gap:0}
+.thr button{flex:1;justify-content:center;font-size:11px;padding:5px 4px;border-right:none}
+.thr button:last-child{border-right:1px solid var(--sb-border)}
+.thr button.act2{background:var(--blue60);color:var(--wh);border-color:var(--blue60)}
+input[type="file"]{display:none}
+.sb-ren{font-size:13px;font-family:var(--font);padding:4px 8px;border:1px solid var(--blue60);outline:none;background:var(--sb-bg);color:var(--sb-active);width:100%;border-radius:0}
+
+.mn{flex:1;overflow-y:auto;padding:0}
+.mn::-webkit-scrollbar{width:6px}
+.mn::-webkit-scrollbar-thumb{background:var(--g30);border-radius:3px}
+[data-theme="dark"] .mn::-webkit-scrollbar-thumb{background:var(--g70)}
+
+.tp{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;gap:12px}
+.tp-t{font-size:18px;font-weight:600;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font);flex:1;padding:0}
+.tp-a{display:flex;gap:8px;align-items:center}
+.tp-a button{font-size:12px;font-family:var(--font);padding:6px 14px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;transition:all .12s;border-radius:0}
+.tp-a button:hover{background:var(--hover);border-color:var(--border2)}
+.tp-a button.dg{color:var(--red60);border-color:transparent}
+.tp-a button.dg:hover{background:var(--red10)}
+
+.ct{padding:24px 32px 80px}
+.mets{display:flex;gap:1px;margin-bottom:20px;background:var(--border)}
+.met{flex:1;min-width:120px;background:var(--card);padding:16px 20px}
+.met-l{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500;letter-spacing:.02em}
+.met-v{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.met-v.mu{color:var(--text3)}
+
+.fb{display:flex;gap:0;margin-bottom:20px}
+.fbn{font-size:13px;font-family:var(--font);padding:7px 16px;border:1px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;transition:all .12s;margin-right:-1px;border-radius:0}
+.fbn.act{background:var(--g100);color:var(--wh);border-color:var(--g100);z-index:1}
+[data-theme="dark"] .fbn.act{background:var(--g10);color:var(--g100)}
+
+.ac-top{display:flex;gap:0;margin-bottom:16px;align-items:stretch}
+.ac-top input{flex:1;font-size:13px;font-family:var(--font);padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--text);outline:none;border-radius:0}
+.ac-top input:focus{border-color:var(--blue60);box-shadow:inset 0 0 0 1px var(--blue60)}
+.ac-top button{font-size:13px;font-family:var(--font);padding:8px 20px;background:var(--blue60);color:var(--wh);border:1px solid var(--blue60);cursor:pointer;white-space:nowrap;transition:background .12s;border-radius:0}
+.ac-top button:hover{background:var(--blue70)}
+
+.cat{margin-bottom:8px;border:1px solid var(--border);background:var(--card)}
+.cat-h{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;user-select:none;transition:background .12s}
+.cat-h:hover{background:var(--hover)}
+.ca{font-size:10px;color:var(--text3);transition:transform .15s;display:inline-block;width:16px;text-align:center}
+.ca.open{transform:rotate(90deg)}
+.cn{flex:1;font-size:14px;font-weight:600;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font);padding:0}
+.cp{font-size:12px;font-family:var(--font);padding:3px 8px;border:1px solid var(--border);cursor:pointer;outline:none;border-radius:0;-webkit-appearance:none;appearance:none;background-repeat:no-repeat;background-position:right 4px center;background-size:10px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236f6f6f' fill='none' stroke-width='1.2'/%3E%3C/svg%3E");padding-right:20px}
+.cs{font-size:14px;font-weight:600;white-space:nowrap;min-width:70px;text-align:right}
+.cb{font-size:11px;background:var(--bg2);color:var(--text2);padding:2px 8px;white-space:nowrap}
+
+.itm{border-top:1px solid var(--border);padding:12px 16px;transition:opacity .2s}
+.itm.bought{opacity:.3}
+.fg{margin-bottom:8px}
+.fg:last-child{margin-bottom:0}
+.fr{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.fd{display:flex;flex-direction:column;gap:2px}
+.fl{font-size:11px;color:var(--text3);font-weight:500;letter-spacing:.02em}
+.fi{font-size:13px;font-family:var(--font);padding:6px 10px;border:1px solid var(--border);background:var(--bg);color:var(--text);outline:none;transition:border-color .12s;border-radius:0;width:100%}
+.fi:focus{border-color:var(--blue60);box-shadow:inset 0 0 0 1px var(--blue60)}
+.pw{position:relative}
+.pw input{padding-right:24px;text-align:right}
+.pw .yn{position:absolute;right:8px;bottom:7px;font-size:12px;color:var(--text3);pointer-events:none}
+select.sl{font-size:12px;font-family:var(--font);padding:6px 22px 6px 8px;border:1px solid var(--border);cursor:pointer;outline:none;border-radius:0;-webkit-appearance:none;appearance:none;background-repeat:no-repeat;background-position:right 6px center;background-size:10px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236f6f6f' fill='none' stroke-width='1.2'/%3E%3C/svg%3E")}
+select.sl:focus{border-color:var(--blue60);box-shadow:inset 0 0 0 1px var(--blue60)}
+.ph{background:var(--pri-h-bg);color:var(--pri-h-c);border-color:var(--pri-h-bg)}
+.pm{background:var(--pri-m-bg);color:var(--pri-m-c);border-color:var(--pri-m-bg)}
+.pl{background:var(--pri-l-bg);color:var(--pri-l-c);border-color:var(--pri-l-bg)}
+.sd{background:var(--st-dec-bg);color:var(--st-dec-c);border-color:var(--st-dec-bg)}
+.sr{background:var(--st-rev-bg);color:var(--st-rev-c);border-color:var(--st-rev-bg)}
+.sp{background:var(--st-pen-bg);color:var(--st-pen-c);border-color:var(--st-pen-bg)}
+.sb2{background:var(--st-buy-bg);color:var(--st-buy-c);border-color:var(--st-buy-bg)}
+
+.db{font-size:18px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 4px;line-height:1;transition:color .12s;align-self:flex-end;margin-bottom:4px}
+.db:hover{color:var(--red60)}
+.cf{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);align-items:center}
+.ab{font-size:12px;font-family:var(--font);color:var(--blue60);background:transparent;border:1px solid var(--blue60);padding:5px 12px;cursor:pointer;border-radius:0;transition:all .12s}
+.ab:hover{background:var(--blue60);color:var(--wh)}
+.cd{font-size:12px;font-family:var(--font);color:var(--red60);background:none;border:none;cursor:pointer;margin-left:auto}
+.cd:hover{text-decoration:underline}
+
+.emp{text-align:center;padding:48px 20px;color:var(--text3)}
+.emp h2{font-size:16px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.emp p{font-size:13px;line-height:1.8}
+.ul{font-size:12px;color:var(--blue60);word-break:break-all;display:block;margin-top:2px;text-decoration:none}
+.ul:hover{text-decoration:underline}
+
+.ovb{background:var(--card);border:1px solid var(--border);padding:16px 20px;margin-bottom:1px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:background .12s}
+.ovb:hover{background:var(--hover)}
+.ovb-n{flex:1;font-size:14px;font-weight:500}
+.ovb-c{font-size:12px;color:var(--text2);min-width:60px;text-align:right}
+.ovb-t{font-size:15px;font-weight:600;min-width:90px;text-align:right}
+
+@media(max-width:768px){
+.sb{width:56px;min-width:56px}
+.sb-hd{padding:14px 0;text-align:center}
+.sb-logo span:not(.dot){display:none}
+.sb-logo .dot{margin:0 auto}
+.sb-sec,.ni>span,.ni .cnt,.ni .sa,.sb-add>span,.sb-ft button>span,.thr button>span{display:none}
+.ni{padding:10px 0;justify-content:center}
+.ni svg{margin:0}
+.sb-add{padding:10px 0;justify-content:center}
+.sb-add svg{margin:0}
+.sb-ft button{justify-content:center;padding:8px}
+.sb-ft button svg{margin:0}
+.thr button{padding:6px}
+.tp{padding:14px 16px}
+.ct{padding:16px 16px 80px}
+.mets{flex-direction:column;gap:1px}
+.fr{flex-direction:column;gap:6px}
+.fd{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="sb" id="sb"></div>
+<div class="mn" id="mn"></div>
+<script>
+const DB_NAME="PurchaseMgrDB",DB_VER=1,STORE="state";
+const PRI=["高","中","低"],STS=["決定","検討中","未定","購入済み"];
+const PO={"高":0,"中":1,"低":2};
+let S,vw="overview",aB=null,col={},fl="all",dbi=null,renB=null;
+
+function uid(){return"id"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function fmt(n){return n?n.toLocaleString()+"円":"-"}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function opts(a,s){return a.map(v=>`<option value="${v}"${v===s?" selected":""}>${v}</option>`).join("")}
+
+const INIT={boards:[{id:uid(),name:"#desksetup",categories:[
+{id:uid(),name:"KVM関連",priority:"高",items:[{id:uid(),product:"UDP2-12AP",maker:"ConnectPRO",price:90000,source:"公式 / eBay",url:"",priority:"高",status:"決定",notes:"DDM(EDID)搭載。PCとMacの画面崩れを完全防止。"}]},
+{id:uid(),name:"Mac用ドック",priority:"高",items:[{id:uid(),product:"D6000 または D6000S",maker:"Dell",price:10000,source:"メルカリ等(中古)",url:"",priority:"高",status:"決定",notes:"DisplayLink対応。M1無印でも2画面出力可。DP出力x2が必須。"}]},
+{id:uid(),name:"映像ケーブル",priority:"高",items:[{id:uid(),product:"VESA認証 DP 1.4ケーブル x2~4本",maker:"Cable Matters 等",price:5000,source:"Amazon",url:"",priority:"高",status:"検討中",notes:"KVM-PC間、KVM-モニター間用。必ずVESA認証済みを選ぶこと。"}]},
+{id:uid(),name:"USB延長ケーブル",priority:"高",items:[{id:uid(),product:"Thunderbolt 4 延長ケーブル (白色)",maker:"",price:3000,source:"Amazon 等",url:"",priority:"高",status:"検討中",notes:"D6000-MacBook接続用。40Gbps/100W対応、長さ1m未満が絶対条件。"}]},
+{id:uid(),name:"入力デバイス",priority:"中",items:[{id:uid(),product:"8000Hz対応 キーボード",maker:"",price:0,source:"",url:"",priority:"中",status:"検討中",notes:"KVMのUSB 3.0ポートに接続して使用。"},{id:uid(),product:"8000Hz対応 マウス",maker:"",price:0,source:"",url:"",priority:"中",status:"検討中",notes:"同上。KVMのUSB 3.0ポートへ接続。"}]},
+{id:uid(),name:"モニター",priority:"中",items:[{id:uid(),product:"4K 144Hz以上 ゲーミングモニター",maker:"",price:0,source:"",url:"",priority:"中",status:"検討中",notes:"KVM経由でPCゲームの限界FPSを引き出す用。"},{id:uid(),product:"4K 60Hz 作業用モニター",maker:"",price:0,source:"",url:"",priority:"中",status:"検討中",notes:"サブモニター。"}]},
+{id:uid(),name:"オーディオ",priority:"低",items:[{id:uid(),product:"マイク / ヘッドセット",maker:"",price:0,source:"",url:"",priority:"低",status:"検討中",notes:"KVMのUSBポートに繋げばMacとPCで共有可能。"}]},
+{id:uid(),name:"デスク周辺",priority:"低",items:[{id:uid(),product:"モニターアーム (デュアル用)",maker:"エルゴトロン 等",price:20000,source:"Amazon 等",url:"",priority:"低",status:"未定",notes:"デスク上をスッキリさせ設置スペースを確保。"},{id:uid(),product:"デスクマット (白色 / ライトグレー)",maker:"",price:0,source:"",url:"",priority:"低",status:"未定",notes:"白USBケーブルに合わせて統一感を出す。"}]},
+{id:uid(),name:"ケーブル整理",priority:"高",items:[{id:uid(),product:"ケーブルトレー / 配線隠し",maker:"",price:0,source:"",url:"",priority:"高",status:"未定",notes:"ドックとKVMでケーブル量が多くなるため必須級。"}]},
+]}],theme:"auto"};
+
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VER);r.onupgradeneeded=e=>{e.target.result.createObjectStore(STORE)};r.onsuccess=e=>{dbi=e.target.result;res()};r.onerror=e=>rej(e)})}
+function dbG(k){return new Promise((res,rej)=>{const t=dbi.transaction(STORE,"readonly");const r=t.objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=e=>rej(e)})}
+function dbS(k,v){return new Promise((res,rej)=>{const t=dbi.transaction(STORE,"readwrite");const r=t.objectStore(STORE).put(v,k);r.onsuccess=()=>res();r.onerror=e=>rej(e)})}
+async function load(){try{await openDB();const d=await dbG("data");if(d){S=d;return}}catch(e){}S=JSON.parse(JSON.stringify(INIT))}
+let st=null;
+function save(){if(st)clearTimeout(st);st=setTimeout(async()=>{try{await dbS("data",S)}catch(e){}},300)}
+
+function bU(b){return b.categories.reduce((s,c)=>s+c.items.filter(i=>i.status!=="購入済み").reduce((a,i)=>a+(i.price||0),0),0)}
+function bB(b){return b.categories.reduce((s,c)=>s+c.items.filter(i=>i.status==="購入済み").reduce((a,i)=>a+(i.price||0),0),0)}
+function bC(b){return b.categories.reduce((s,c)=>s+c.items.length,0)}
+function bBC(b){return b.categories.reduce((s,c)=>s+c.items.filter(i=>i.status==="購入済み").length,0)}
+function cU(c){return c.items.filter(i=>i.status!=="購入済み").reduce((s,i)=>s+(i.price||0),0)}
+function sortC(cs){return[...cs].sort((a,b)=>(PO[a.priority]||2)-(PO[b.priority]||2))}
+
+function apTh(){document.documentElement.removeAttribute("data-theme");const t=S.theme;if(t==="dark"||(t==="auto"&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.setAttribute("data-theme","dark")}
+function pc(p){return p==="高"?"ph":p==="中"?"pm":"pl"}
+function sc(s){return s==="決定"?"sd":s==="検討中"?"sr":s==="購入済み"?"sb2":"sp"}
+
+function rSB(){
+  const tU=S.boards.reduce((s,b)=>s+bU(b),0);
+  let h=`<div class="sb-hd"><div class="sb-logo"><span class="dot"></span><span>購入管理</span></div></div><div class="sb-nv"><div class="sb-sec"><span>ボード</span></div>
+<div class="ni${vw==="overview"?" act":""}" onclick="goOV()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg><span>すべて</span><span class="cnt">${fmt(tU)}</span></div>`;
+  S.boards.forEach((b,i)=>{
+    const act=vw==="board"&&aB===b.id;
+    if(renB===b.id){
+      h+=`<div class="ni${act?" act":""}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="sb-ren" type="text" value="${esc(b.name)}" onblur="frn(${i},this.value)" onkeydown="if(event.key==='Enter')frn(${i},this.value)" id="rni"></div>`;
+    } else {
+      h+=`<div class="ni${act?" act":""}" onclick="goB('${b.id}')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><span>${esc(b.name)}</span><span class="cnt">${bC(b)}</span>
+<span class="sa"><button class="sab" onclick="event.stopPropagation();srn('${b.id}')" title="名前変更"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M11.5 1.5l3 3L5 14H2v-3z" stroke="currentColor" stroke-width="1.3"/></svg></button><button class="sab" onclick="event.stopPropagation();dlB(${i})" title="削除"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></span></div>`;
+    }
+  });
+  h+=`<div class="sb-add" onclick="adB()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>新しいボード</span></div></div>
+<div class="sb-ft"><div class="sb-sec" style="padding:0 0 6px"><span>テーマ</span></div>
+<div class="thr"><button class="${S.theme==="auto"?"act2":""}" onclick="sTh('auto')"><span>自動</span></button><button class="${S.theme==="light"?"act2":""}" onclick="sTh('light')"><span>ライト</span></button><button class="${S.theme==="dark"?"act2":""}" onclick="sTh('dark')"><span>ダーク</span></button></div>
+<button onclick="expJ()"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 10v3h10v-3M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>JSON書き出し</span></button>
+<button onclick="document.getElementById('imp').click()"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 10v3h10v-3M8 10V2M5 5l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>JSON読み込み</span></button>
+<input type="file" id="imp" accept=".json" onchange="impJ(event)"></div>`;
+  document.getElementById("sb").innerHTML=h;
+  if(renB){const el=document.getElementById("rni");if(el){el.focus();el.select()}}
+}
+
+function rMN(){vw==="overview"?rOV():rBD()}
+
+function rOV(){
+  const tU=S.boards.reduce((s,b)=>s+bU(b),0),tB=S.boards.reduce((s,b)=>s+bB(b),0),tC=S.boards.reduce((s,b)=>s+bC(b),0),tBC=S.boards.reduce((s,b)=>s+bBC(b),0);
+  let h=`<div class="tp"><span class="tp-t" style="cursor:default">すべてのボード</span></div><div class="ct">
+<div class="mets"><div class="met"><div class="met-l">未購入 合計</div><div class="met-v">${fmt(tU)}</div></div><div class="met"><div class="met-l">購入済み 合計</div><div class="met-v">${fmt(tB)}</div></div><div class="met"><div class="met-l">全体進捗</div><div class="met-v">${tBC} / ${tC}</div></div></div>`;
+  if(!S.boards.length)h+=`<div class="emp"><h2>ボードがありません</h2><p>左のサイドバーから「新しいボード」を作成してください</p></div>`;
+  else S.boards.forEach(b=>{h+=`<div class="ovb" onclick="goB('${b.id}')"><div class="ovb-n">${esc(b.name)}</div><div class="ovb-c">${bBC(b)}/${bC(b)} 完了</div><div class="ovb-t">${fmt(bU(b))}</div></div>`});
+  h+=`</div>`;document.getElementById("mn").innerHTML=h;
+}
+
+function rBD(){
+  const b=S.boards.find(x=>x.id===aB);if(!b){goOV();return}
+  const bi=S.boards.indexOf(b);
+  const sorted=sortC(b.categories);
+  const fc=fl==="all"?sorted:sorted.map(c=>({...c,items:c.items.filter(i=>fl==="購入済み"?i.status==="購入済み":i.status!=="購入済み")})).filter(c=>c.items.length>0);
+
+  let h=`<div class="tp"><input class="tp-t" type="text" value="${esc(b.name)}" onchange="rnB(${bi},this.value)"><div class="tp-a"><button class="dg" onclick="dlB(${bi})">ボード削除</button></div></div><div class="ct">
+<div class="mets"><div class="met"><div class="met-l">未購入 合計</div><div class="met-v">${bU(b)?fmt(bU(b)):'<span class="mu">-</span>'}</div></div><div class="met"><div class="met-l">購入済み</div><div class="met-v">${bB(b)?fmt(bB(b)):'<span class="mu">-</span>'}</div></div><div class="met"><div class="met-l">進捗</div><div class="met-v">${bBC(b)} / ${bC(b)}</div></div></div>
+<div class="fb"><button class="fbn${fl==="all"?" act":""}" onclick="sF('all')">全て</button><button class="fbn${fl==="未購入"?" act":""}" onclick="sF('未購入')">未購入</button><button class="fbn${fl==="購入済み"?" act":""}" onclick="sF('購入済み')">購入済み</button></div>
+<div class="ac-top"><input type="text" id="nc" onkeydown="if(event.key==='Enter')aC(${bi})"><button onclick="aC(${bi})">カテゴリ追加</button></div>`;
+
+  if(!fc.length&&!b.categories.length)h+=`<div class="emp"><h2>カテゴリを追加</h2><p>上の入力欄にカテゴリ名を入力して追加</p></div>`;
+  else if(!fc.length)h+=`<div class="emp"><h2>該当アイテムなし</h2><p>フィルターを変更してみてください</p></div>`;
+
+  fc.forEach(c=>{
+    const ci=b.categories.findIndex(x=>x.id===c.id);const open=!col[c.id];const sub=cU(b.categories[ci]);
+    h+=`<div class="cat"><div class="cat-h" onclick="tC('${c.id}')"><span class="ca${open?" open":""}">&#9654;</span><input class="cn" type="text" value="${esc(c.name)}" onclick="event.stopPropagation()" onchange="rnC(${bi},${ci},this.value)"><select class="cp sl ${pc(c.priority||'中')}" onclick="event.stopPropagation()" onchange="cP(${bi},${ci},this.value)">${opts(PRI,c.priority||"中")}</select><span class="cs">${fmt(sub)}</span><span class="cb">${c.items.length}件</span></div>`;
+    if(open){
+      c.items.forEach(item=>{
+        const ii=b.categories[ci].items.findIndex(x=>x.id===item.id);const bg=item.status==="購入済み";
+        h+=`<div class="itm${bg?" bought":""}">
+<div class="fg"><div class="fr">
+<div class="fd" style="flex:2;min-width:140px"><div class="fl">製品名 / 型番</div><input class="fi" type="text" value="${esc(item.product)}" onchange="upd(${bi},${ci},${ii},'product',this.value)"></div>
+<div class="fd" style="flex:1;min-width:80px"><div class="fl">メーカー</div><input class="fi" type="text" value="${esc(item.maker)}" onchange="upd(${bi},${ci},${ii},'maker',this.value)"></div>
+<div class="fd pw" style="min-width:110px"><div class="fl">金額</div><input class="fi" type="number" value="${item.price||""}" onchange="upd(${bi},${ci},${ii},'price',this.value)"><span class="yn">円</span></div>
+</div></div>
+<div class="fg"><div class="fr">
+<div class="fd" style="flex:1;min-width:80px"><div class="fl">購入先</div><input class="fi" type="text" value="${esc(item.source)}" onchange="upd(${bi},${ci},${ii},'source',this.value)"></div>
+<div class="fd" style="flex:1;min-width:100px"><div class="fl">URL</div><input class="fi" type="url" value="${esc(item.url)}" onchange="upd(${bi},${ci},${ii},'url',this.value)"></div>
+<div class="fd"><div class="fl">優先度</div><select class="sl ${pc(item.priority)}" onchange="upd(${bi},${ci},${ii},'priority',this.value)">${opts(PRI,item.priority)}</select></div>
+<div class="fd"><div class="fl">ステータス</div><select class="sl ${sc(item.status)}" onchange="upd(${bi},${ci},${ii},'status',this.value)">${opts(STS,item.status)}</select></div>
+<button class="db" onclick="rmI(${bi},${ci},${ii})" title="削除">&times;</button>
+</div></div>
+<div class="fg"><div class="fr"><div class="fd" style="flex:1"><div class="fl">備考 / 条件</div><input class="fi" type="text" value="${esc(item.notes)}" onchange="upd(${bi},${ci},${ii},'notes',this.value)"></div></div></div>
+${item.url?`<a class="ul" href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.url)}</a>`:""}
+</div>`;
+      });
+      h+=`<div class="cf"><button class="ab" onclick="aI(${bi},${ci})">+ アイテム追加</button><button class="cd" onclick="rmC(${bi},${ci})">カテゴリ削除</button></div>`;
+    }
+    h+=`</div>`;
+  });
+  h+=`</div>`;document.getElementById("mn").innerHTML=h;
+}
+
+function R(){apTh();rSB();rMN()}
+function goOV(){vw="overview";fl="all";R()}
+function goB(id){vw="board";aB=id;fl="all";R()}
+function tC(id){col[id]=!col[id];R()}
+function sTh(t){S.theme=t;save();R()}
+function sF(f){fl=f;R()}
+function srn(id){renB=id;rSB()}
+function frn(i,v){S.boards[i].name=v.trim()||S.boards[i].name;renB=null;save();R()}
+function adB(){const b={id:uid(),name:"新しいボード",categories:[]};S.boards.push(b);save();goB(b.id)}
+function rnB(bi,v){S.boards[bi].name=v;save();rSB()}
+function dlB(bi){if(!confirm("「"+S.boards[bi].name+"」を削除しますか?"))return;const id=S.boards[bi].id;S.boards.splice(bi,1);save();aB===id?goOV():R()}
+function rnC(bi,ci,v){S.boards[bi].categories[ci].name=v;save()}
+function cP(bi,ci,v){S.boards[bi].categories[ci].priority=v;save();R()}
+function aC(bi){const inp=document.getElementById("nc");const nm=inp.value.trim();if(!nm)return;S.boards[bi].categories.push({id:uid(),name:nm,priority:"中",items:[]});inp.value="";save();R()}
+function rmC(bi,ci){if(!confirm("「"+S.boards[bi].categories[ci].name+"」を削除しますか?"))return;S.boards[bi].categories.splice(ci,1);save();R()}
+function aI(bi,ci){S.boards[bi].categories[ci].items.push({id:uid(),product:"",maker:"",price:0,source:"",url:"",priority:"中",status:"未定",notes:""});save();R()}
+function rmI(bi,ci,ii){S.boards[bi].categories[ci].items.splice(ii,1);save();R()}
+function upd(bi,ci,ii,f,v){if(f==="price")v=parseInt(v)||0;S.boards[bi].categories[ci].items[ii][f]=v;save();R()}
+function expJ(){const bl=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="purchase_mgr_"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(a.href)}
+function impJ(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.boards)S=d;else{alert("不正な形式");return}save();goOV()}catch(er){alert("JSON解析失敗")}};r.readAsText(f);e.target.value=""}
+window.matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{if(S.theme==="auto")apTh()});
+(async()=>{await load();R()})();
+</script>
+</body>
+</html>
